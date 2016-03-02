@@ -34,6 +34,10 @@ public class Indexer {
     }
 
     public void Index(Publication publication) throws IOException {
+        if (publication.getType() != "article" && publication.getType() != "inproceedings")
+        {
+            System.out.println("Skipping: " + publication.getType());
+        }
         Document doc = new Document();
         doc.add(new StringField("key", publication.getKey(), Field.Store.YES));
         doc.add(new StringField("title", publication.getTitle(), Field.Store.NO));

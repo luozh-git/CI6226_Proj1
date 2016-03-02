@@ -8,36 +8,54 @@ import java.util.*;
 
 /**
  * @author ley
- *
- * created first in project xml5_coauthor_graph
+ *         <p>
+ *         created first in project xml5_coauthor_graph
  */
 public class Publication {
-    private static Set ps= new HashSet(650000);
+
     private static int maxNumberOfAuthors = 0;
     private String key;
-    private Person[] authors;	// or editors
+    private String type;
+    private String title;
+    private Integer year;
+    private String venue;
 
-    public Publication(String key, Person[] persons) {
+    private Person[] authors;    // or editors
+
+    public Publication(String key, String type, String title, String year, String venue, Person[] persons) {
         this.key = key;
+        this.type = type;
+        this.title = title;
+        this.year = Integer.parseInt(year);
+        this.venue = venue;
         authors = persons;
-        ps.add(this);
         if (persons.length > maxNumberOfAuthors)
             maxNumberOfAuthors = persons.length;
     }
-    
-    public static int getNumberOfPublications() {
-        return ps.size();
-    }
-    
-    public static int getMaxNumberOfAuthors() {
-        return maxNumberOfAuthors;
-    }
-    
+
     public Person[] getAuthors() {
         return authors;
     }
-    
-    static Iterator iterator() {
-        return ps.iterator();
+
+    public String getKey() {
+        return key;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public String getVenue() {
+        return venue;
+    }
+
+
 }

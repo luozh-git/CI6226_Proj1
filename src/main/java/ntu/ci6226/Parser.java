@@ -41,26 +41,11 @@ public class Parser {
 
         public void startElement(String namespaceURI, String localName,
                                  String rawName, Attributes atts) throws SAXException {
+            insidePerson = (rawName.equals("author") || rawName.equals("editor"));
+            insideTitle = (rawName.equals("title"));
+            insideYear = (rawName.equals("year"));
+            insideVenue = (rawName.equals("journal") || rawName.equals("booktitle"));
             String k;
-
-            if (insidePerson = (rawName.equals("author") || rawName
-                    .equals("editor"))) {
-                author = "";
-                return;
-            }
-            if (insideTitle = (rawName.equals("title"))) {
-                title = "";
-                return;
-            }
-            if (insideYear = (rawName.equals("year"))) {
-                year = "";
-                return;
-            }
-            if (insideVenue = (rawName.equals("journal") || rawName.equals("booktitle"))) {
-                venue = "";
-                return;
-            }
-
             if ((atts.getLength() > 0) && ((k = atts.getValue("key")) != null)) {
                 key = k;
                 recordTag = rawName;
@@ -71,11 +56,7 @@ public class Parser {
                                String rawName) throws SAXException {
             if (rawName.equals("author") || rawName.equals("editor")) {
 
-                Person p;
-                if ((p = Person.searchPerson(author)) == null) {
-                    p = new Person(author);
-                }
-                p.increment();
+                Person p = new Person(author);
                 if (numberOfPersons < maxAuthorsPerPaper)
                     persons[numberOfPersons++] = p;
                 return;
@@ -102,13 +83,13 @@ public class Parser {
         public void characters(char[] ch, int start, int length)
                 throws SAXException {
             if (insidePerson)
-                author += new String(ch, start, length);
+                author = new String(ch, start, length);
             if (insideVenue)
-                venue += new String(ch, start, length);
+                venue = new String(ch, start, length);
             if (insideTitle)
-                title += new String(ch, start, length);
+                title = new String(ch, start, length);
             if (insideYear)
-                year += new String(ch, start, length);
+                year = new String(ch, start, length);
 
         }
 
@@ -143,8 +124,7 @@ public class Parser {
         this.indexer = indexer;
     }
 
-    public void Parse()
-    {
+    public void Parse() {
         try {
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();
             SAXParser parser = parserFactory.newSAXParser();

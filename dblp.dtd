@@ -3,7 +3,7 @@
 
         http://dblp.uni-trier.de/xml/
 
-	DBLP: Copyright 1993-2011 by Michael Ley (Universität Trier, Informatik, ley@uni-trier.de)
+	DBLP: Copyright 1993-2016 by Michael Ley (Universität Trier, Informatik, ley@uni-trier.de)
 
 	The data provided by DBLP on its webpages as well as the XML files available at http://dblp.uni-trier.de/xml/
 	are released under the Open Data Commons Attribution License (ODC-BY 1.0). You are free to copy, distribute, use, modify,
@@ -21,6 +21,7 @@
 	publtype:
 	encyclopedia entry
 	informal publication
+	edited publication
 	survey
 -->
 
@@ -81,9 +82,13 @@
 
 <!ELEMENT author    (#PCDATA)>
 <!ATTLIST author
+                    aux CDATA #IMPLIED
                     bibtex CDATA #IMPLIED
 >
 <!ELEMENT editor    (#PCDATA)>
+<!ATTLIST editor
+                    aux CDATA #IMPLIED
+>
 <!ELEMENT address   (#PCDATA)>
 
 <!ENTITY % titlecontents "#PCDATA|sub|sup|i|tt|ref">
@@ -113,6 +118,7 @@
 <!ELEMENT cdrom     (#PCDATA)>
 <!ATTLIST cite
                     label CDATA #IMPLIED
+                    ref CDATA #IMPLIED
 >
 <!ELEMENT crossref  (#PCDATA)>
 <!ELEMENT isbn      (#PCDATA)>

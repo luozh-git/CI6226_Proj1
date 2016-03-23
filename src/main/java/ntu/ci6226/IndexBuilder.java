@@ -7,6 +7,7 @@ import org.apache.lucene.index.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.misc.*;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -23,6 +24,7 @@ public class IndexBuilder {
         indexCase2();
         indexCase3();
         indexCase4();
+        indexCase5();
     }
 
     public static void indexCase1() throws IOException {
@@ -137,7 +139,36 @@ public class IndexBuilder {
         System.out.println("\tReport written to case4_report.txt");
     }
 
-    public static void writeTerms(String index, Writer writer) throws IOException {
+    public static void indexCase5() throws IOException {
+
+        //Case 5. Index with Porter stemmer, using stop words.
+
+        File file = new File("case5_report.txt");
+        if (file.exists())
+            return;
+
+        Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("case5_report.txt"), "utf-8"));
+        writer.write("Index with Porter stemmer, using default set of stop words." + newLine);
+        System.out.println("5. Index with bigram.");
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        Indexer indexer = new Indexer("Index5", new BiwordStandardAnalyzer());
+        Parser p = new Parser(input, indexer);
+        p.Parse();
+        indexer.Close();
+        stopWatch.stop();
+
+        writer.write("Elapsed time: " + stopWatch.toString() + newLine);
+        writer.write(newLine);
+
+        System.out.println("\tElapsed time: " + stopWatch.toString());
+        writeTerms("Index5", writer);
+        writer.close();
+        System.out.println("\tReport written to case5_report.txt");
+    }
+
+    public static void writeTerms(String index, Writer writer) throws IOException{
         Directory dir = FSDirectory.open(Paths.get(index));
         IndexReader indexReader = DirectoryReader.open(dir);
         Terms terms = MultiFields.getTerms(indexReader, "title");
@@ -153,5 +184,24 @@ public class IndexBuilder {
         writer.write(newLine);
         writer.write("Total number of terms: " + count);
         System.out.println("\tTotal number of terms in Title field: " + count);
+
+        // Top 10 terms with highest total term frequency
+        HighFreqTerms.TotalTermFreqComparator cmp = new HighFreqTerms.TotalTermFreqComparator();
+        TermStats[] highFreqTerms = null;
+
+        try {
+            highFreqTerms = HighFreqTerms.getHighFreqTerms(indexReader, 10, "title", cmp);
+        }catch (Exception e){
+        }
+
+        for (TermStats ts : highFreqTerms) {
+            writer.write(newLine);
+            writer.write(ts.termtext.utf8ToString() + ": ");
+            writer.write(newLine);
+            writer.write("Document frequency: " + ts.docFreq );
+            writer.write(newLine);
+            writer.write("Total term frequency: " + ts.totalTermFreq);
+            writer.write(newLine);
+        }
     }
 }

@@ -64,7 +64,7 @@ public final class BiwordStandardAnalyzer extends StopwordAnalyzerBase {
         LowerCaseFilter tok3 = new LowerCaseFilter(tok2);
         StopFilter tok4 = new StopFilter(tok3, this.stopwords);
         PorterStemFilter tok5 = new PorterStemFilter(tok4);
-        final ShingleFilter tok6 = new ShingleFilter(tok5);
+        final ShingleFilter tok6 = new ShingleFilter(tok5, 2, 2);
 
         return new TokenStreamComponents((Tokenizer)src, tok6) {
             protected void setReader(Reader reader) {
